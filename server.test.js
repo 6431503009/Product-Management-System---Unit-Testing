@@ -2,8 +2,11 @@ const request = require('supertest');
 const path = require('path');
 const app = require(path.resolve(__dirname, './server'));
 
+// Test suite for the Product API
 describe('Product API', () => {
+  // Test suite for POST /products endpoint
   describe('POST /products', () => {
+    // Test case to create a new product
     it('should create a new product', async () => {
       const newProduct = {
         name: 'Test Product',
@@ -26,6 +29,7 @@ describe('Product API', () => {
       });
     });
 
+    // Test case to validate required fields
     it('should return 400 if required fields are missing', async () => {
       const response = await request(app)
         .post('/products')
@@ -35,6 +39,7 @@ describe('Product API', () => {
       expect(response.body.message).toBe('กรุณาระบุค่าทุกฟิลด์ที่จำเป็น');
     });
 
+    // Test case to validate field types
     it('should return 400 if field types are invalid', async () => {
       const invalidProduct = {
         name: 123,
@@ -51,6 +56,7 @@ describe('Product API', () => {
       expect(response.body.message).toContain('ประเภทของค่าไม่ถูกต้อง');
     });
 
+    // Test case to validate price and stock values
     it('should return 400 if price or stock is less than or equal to 0', async () => {
       const invalidProduct = {
         name: 'Test Product',
@@ -68,7 +74,9 @@ describe('Product API', () => {
     });
   });
 
+  // Test suite for GET /products endpoint
   describe('GET /products', () => {
+    // Test case to get all products
     it('should return all products', async () => {
       const response = await request(app).get('/products');
 
@@ -77,7 +85,9 @@ describe('Product API', () => {
     });
   });
 
+  // Test suite for PUT /products/:id endpoint
   describe('PUT /products/:id', () => {
+    // Test case to update an existing product
     it('should update an existing product', async () => {
       const newProduct = {
         name: 'Updated Test Product',
@@ -97,6 +107,7 @@ describe('Product API', () => {
       });
     });
 
+    // Test case to validate required fields
     it('should return 400 if required fields are missing', async () => {
       const response = await request(app)
         .put('/products/1')
@@ -106,6 +117,7 @@ describe('Product API', () => {
       expect(response.body.message).toBe('กรุณาระบุค่าทุกฟิลด์ที่จำเป็น');
     });
 
+    // Test case to validate field types
     it('should return 400 if field types are invalid', async () => {
       const invalidProduct = {
         name: 123,
@@ -122,6 +134,7 @@ describe('Product API', () => {
       expect(response.body.message).toContain('ประเภทของค่าไม่ถูกต้อง');
     });
 
+    // Test case to validate price and stock values
     it('should return 400 if price or stock is less than or equal to 0', async () => {
       const invalidProduct = {
         name: 'Test Product',
@@ -138,6 +151,7 @@ describe('Product API', () => {
       expect(response.body.message).toBe('ราคาและจำนวนสินค้าคงคลังต้องมากกว่า 0');
     });
 
+    // Test case to handle product not found
     it('should return 404 if product not found', async () => {
       const response = await request(app)
         .put('/products/999')
@@ -153,7 +167,9 @@ describe('Product API', () => {
     });
   });
 
+  // Test suite for DELETE /products/:id endpoint
   describe('DELETE /products/:id', () => {
+    // Test case to delete a product
     it('should delete a product', async () => {
       const response = await request(app).delete('/products/1');
 
@@ -161,23 +177,23 @@ describe('Product API', () => {
       expect(response.body.message).toBe('สินค้าถูกลบแล้ว และได้รีไอดีสินค้าทั้งหมดใหม่');
     });
 
+    // Test case to handle product not found
     it('should return 404 if product not found', async () => {
       const response = await request(app).delete('/products/999');
 
       expect(response.statusCode).toBe(404);
       expect(response.body.message).toBe('ไม่พบสินค้าที่ต้องการ');
     });
-
-    
   });
-   
+
+  // Test suite for DELETE /products endpoint
   describe('DELETE /products', () => {
+    // Test case to delete all products and reset auto-increment
     it('should delete all products and reset auto-increment', async () => {
       const response = await request(app).delete('/products');
 
       expect(response.statusCode).toBe(200);
       expect(response.body.message).toBe('สินค้าทั้งหมดถูกลบแล้ว และได้รีไอดีสินค้าทั้งหมดใหม่');
-  
     });
   });
 });
